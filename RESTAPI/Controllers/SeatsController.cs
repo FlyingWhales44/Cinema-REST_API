@@ -1,41 +1,69 @@
-﻿using RESTAPI.Models;
+﻿using Newtonsoft.Json;
+using RESTAPI.DAL;
+using RESTAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Web.Http;
 
 namespace RESTAPI.Controllers
 {
+    
+
+
     public class SeatsController : ApiController
     {
-        private DAL.AppContext db = new DAL.AppContext();
+        private static readonly object SyncObject = new object();
+
+        public static DB db;
 
         [HttpGet]
         [Route("seats/getAll")]
-        public IEnumerable<Seat> Get()
+        public HttpResponseMessage Get(HttpRequestMessage request)
         {
-            return db.Seats.ToList();
+            lock (SyncObject)
+            {
+                HttpResponseMessage resp = new HttpResponseMessage();
+
+                var ls = db.seatsList.ToList();
+                var json = JsonConvert.SerializeObject(ls);
+
+                resp.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                return resp;
+            }            
         }
         
+        [HttpPost]
+        [Route("seats/add")]
+        public HttpResponseMessage Post(HttpRequestMessage request)
+        {
+            lock (SyncObject)
+            {                           
+                var json = request.Content.ReadAsStringAsync().Result;
+                var m = JsonConvert.DeserializeObject<SeatModel>(json);
 
-        [HttpPut]
-        [Route("seats/buy/{id}")]
-        public void Buy(int? id)
-        {            
-            Seat s = db.Seats.Find(id);
-            s.Sold = true;
-            db.SaveChanges();
+                db.seatsList.Add(m);
+                          
+                return request.CreateResponse(HttpStatusCode.OK);
+            }
         }
 
         [HttpPut]
-        [Route("seats/setFree/{id}")]
+        [Route("buySpot/{id}")]
+        public void Buy(int? id)
+        {            
+            
+        }
+
+        [HttpPut]
+        [Route("setFree/{id}")]
         public void SetFree(int? id)
         {
-            Seat s = db.Seats.Find(id);
-            s.Sold = false;
-            db.SaveChanges();           
+                    
         }
     }
 }

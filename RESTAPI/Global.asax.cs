@@ -1,4 +1,7 @@
-﻿using System;
+﻿using RESTAPI.Controllers;
+using RESTAPI.DAL;
+using RESTAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,13 +14,20 @@ namespace RESTAPI
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
+
+
         protected void Application_Start()
         {
+
+            SeatsController.db = new DB();
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+
     }
 }
