@@ -11,9 +11,7 @@ using System.Web.Http;
 
 namespace RESTAPI.Controllers
 {
-    
-
-
+    [RoutePrefix("seats")]
     public class SeatsController : ApiController
     {
         private static readonly object SyncObject = new object();
@@ -21,7 +19,7 @@ namespace RESTAPI.Controllers
         public static DB db;
 
         [HttpGet]
-        [Route("seats/getAll")]
+        [Route("getAll")]
         public HttpResponseMessage Get(HttpRequestMessage request)
         {
             lock (SyncObject)
@@ -36,15 +34,37 @@ namespace RESTAPI.Controllers
                 return resp;
             }            
         }
+
+        [HttpGet]
+        [Route("check/{id}")]
+        public bool Check(HttpRequestMessage request,int id)
+        {
+            lock (SyncObject)
+            {
+                var m = db.seatsList.FirstOrDefault(x => x.Id == id);
+
+                if (m != null)
+                {
+                    if (m.Sold)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+        }
         
         [HttpPost]
-        [Route("seats/add")]
+        [Route("add")]
         public HttpResponseMessage Post(HttpRequestMessage request)
         {
             lock (SyncObject)
             {                           
                 var json = request.Content.ReadAsStringAsync().Result;
                 var m = JsonConvert.DeserializeObject<SeatModel>(json);
+
+                m.Id = db.seatsList.Count + 1;
 
                 db.seatsList.Add(m);
                           
@@ -53,17 +73,51 @@ namespace RESTAPI.Controllers
         }
 
         [HttpPut]
-        [Route("buySpot/{id}")]
-        public void Buy(int? id)
-        {            
-            
+        [Route("buyTicket/{id}")]
+        public HttpResponseMessage BuyTicket(HttpRequestMessage request,int id)
+        {
+            lock (SyncObject)
+            {
+                var m = db.seatsList.FirstOrDefault(x => x.Id == id);
+
+                if (m != null)
+                {
+                    if (!m.Sold)
+                    {
+                        m.Sold = true;
+                    }
+                    else
+                    {
+                        return new HttpResponseMessage()
+                        {
+                            Content = new StringContent(
+                                  "Place already sold", Encoding.UTF8
+                          )
+                        };
+                    }
+                }
+
+
+                return new HttpResponseMessage(){
+                    Content = new StringContent(
+                                "Have a nice movie", Encoding.UTF8
+                        )};
+            }         
         }
 
         [HttpPut]
-        [Route("setFree/{id}")]
-        public void SetFree(int? id)
+        [Route("releaseSeat/{id}")]
+        public HttpResponseMessage ReleaseSeat(HttpRequestMessage request, int id)
         {
-                    
+            lock (SyncObject)
+            {
+                var m = db.seatsList.FirstOrDefault(x => x.Id == id);
+
+                if(m != null)
+                    m.Sold = false;
+
+                return request.CreateResponse(HttpStatusCode.OK);
+            }
         }
     }
 }
