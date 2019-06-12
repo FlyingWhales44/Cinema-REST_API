@@ -52,7 +52,9 @@ namespace CinemaWPF
                 int id = Convert.ToInt32((sender as Button).Content);
 
                 var result = sclient.BuySeat(id);
-            }           
+            }
+
+            RefreshAsync();
         }
 
         private void BuyTicketClick(object sender, RoutedEventArgs e)
