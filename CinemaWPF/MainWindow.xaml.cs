@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,16 +23,41 @@ namespace CinemaWPF
     {
         public List<Button> ButtonList;
 
+        public SeatsClient sclient;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            sclient = new SeatsClient();
+
             initializeHalls();
+
+            
+        }
+
+        
+
+        private void Func(object sender, RoutedEventArgs e)
+        {
+            if(btRegister.Background == Brushes.Red)
+            {
+                //rezerwacja biletow
+                MessageBox.Show("Zarezerwowałeś bilet: " + (sender as Button).Name);
+            }
+            if(btRelease.Background == Brushes.Red)
+            {
+                MessageBox.Show("releeese");
+            }
+            if(btBuy.Background == Brushes.Red)
+            {
+                MessageBox.Show("kupiłeś bilet: " + (sender as Button).Name);
+            }
         }
 
         private void BuyTicketClick(object sender, RoutedEventArgs e)
         {
-            if(btRegister.Background == Brushes.Red || btRelease.Background == Brushes.Red)
+            if (btRegister.Background == Brushes.Red || btRelease.Background == Brushes.Red)
             {
                 btRegister.Background = Brushes.WhiteSmoke;
                 btRelease.Background = Brushes.WhiteSmoke;
@@ -59,27 +85,11 @@ namespace CinemaWPF
             btRelease.Background = Brushes.Red;
         }
 
-        private void Func(object sender, RoutedEventArgs e)
-        {
-            if(btRegister.Background == Brushes.Red)
-            {
-                MessageBox.Show("Zarezerwowałeś bilet: " + (sender as Button).Name);
-            }
-            if(btRelease.Background == Brushes.Red)
-            {
-                MessageBox.Show("releeese");
-            }
-            if(btBuy.Background == Brushes.Red)
-            {
-                MessageBox.Show("kupiłeś bilet: " + (sender as Button).Name);
-            }
-        }
-
         private void initializeHalls()
         {
-            initFirstHall(15, 15);
-            initSeccHall(10, 15);
-            initThirdHall(17, 13);
+            initFirstHall(8, 8);
+            initSeccHall(10, 10);
+            initThirdHall(15, 15);
         }
 
         private void initFirstHall(int x,int y)
@@ -101,7 +111,11 @@ namespace CinemaWPF
                 {
                     pole = new Button();
                     pole.Background = Brushes.Blue;
-                    pole.Name = "I" + i + "I" + j;
+
+                    var model = sclient.CreateSeat(1);
+                    string s = model.Id.ToString();
+                    //pole.Name = "Id+" + s +"+id";
+                    pole.Content = s;
                     pole.SetValue(Grid.RowProperty, i);
                     pole.SetValue(Grid.ColumnProperty, j);
                     pole.PreviewMouseDown += new MouseButtonEventHandler(Func);
@@ -130,6 +144,7 @@ namespace CinemaWPF
                 {
                     pole = new Button();
                     pole.Background = Brushes.Blue;
+                    //var m = sclient.CreateSeat(2);
                     pole.Name = "I" + i + "I" + j;
                     pole.SetValue(Grid.RowProperty, i);
                     pole.SetValue(Grid.ColumnProperty, j);

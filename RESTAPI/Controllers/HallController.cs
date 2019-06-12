@@ -21,7 +21,7 @@ namespace RESTAPI.Controllers
 
         [HttpGet]
         [Route("getAll")]
-        public HttpResponseMessage Get(HttpRequestMessage request)
+        public HttpResponseMessage Get()
         {
             lock (SyncObject)
             {

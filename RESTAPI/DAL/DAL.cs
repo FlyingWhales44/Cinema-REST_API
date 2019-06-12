@@ -25,13 +25,6 @@ namespace RESTAPI.DAL
                 new HallModel{Id=2,name="Druga sala"},
                 new HallModel{Id=3,name="Trzecia sala"}
             });
-
-            seatsList.AddRange(new[]
-            {
-                new SeatModel{Id=1,Sold=false,Reservation=false,HallId=1},
-                new SeatModel{Id=2,Sold=false,Reservation=false,HallId=1},
-                new SeatModel{Id=3,Sold=false,Reservation=false,HallId=1}
-            });
         }
     }       
 }

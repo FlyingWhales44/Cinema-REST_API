@@ -18,7 +18,7 @@ namespace RESTAPI
 
         protected void Application_Start()
         {
-
+            HallController.db = new DB();
             SeatsController.db = new DB();
 
             AreaRegistration.RegisterAllAreas();

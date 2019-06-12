@@ -20,7 +20,7 @@ namespace RESTAPI.Controllers
 
         [HttpGet]
         [Route("getAll")]
-        public HttpResponseMessage Get(HttpRequestMessage request)
+        public HttpResponseMessage Get()
         {
             lock (SyncObject)
             {
@@ -68,7 +68,7 @@ namespace RESTAPI.Controllers
 
                 db.seatsList.Add(m);
                           
-                return request.CreateResponse(HttpStatusCode.OK);
+                return request.CreateResponse(HttpStatusCode.OK, m);
             }
         }
 
