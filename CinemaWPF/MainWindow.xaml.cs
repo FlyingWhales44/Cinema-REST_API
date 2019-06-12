@@ -23,6 +23,9 @@ namespace CinemaWPF
 
         private List<RESTAPI.Models.SeatModel> seatsList;
 
+        System.Timers.Timer DataThread; 
+        DispatcherTimer UInterface;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,6 +34,66 @@ namespace CinemaWPF
 
             initializeHalls();
 
+            declareTimers();
+
+            startRefreshing();
+        }
+
+        private void declareTimers()
+        {
+            UInterface = new DispatcherTimer();
+            DataThread = new System.Timers.Timer();
+
+            UInterface.Interval = TimeSpan.FromSeconds(0.5);
+            DataThread.Interval = 500;
+
+            UInterface.Tick += new EventHandler(Refresh);
+            DataThread.Elapsed += new ElapsedEventHandler(timer_Tick);        
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                seatsList = sclient.GetSeats().Result;
+            });
+        }
+
+        private void startRefreshing()
+        {
+            if (DataThread.Enabled == false)
+            {
+                DataThread.Enabled = true;
+                UInterface.Start();
+            }
+            else
+            {
+                DataThread.Enabled = false;
+                UInterface.Stop();
+            }
+        }
+
+        private void Refresh(object sender, EventArgs e)
+        {           
+
+            foreach (var s in seatsList)
+            {
+                if (s.Reservation)
+                {
+                    var bt = ButtonList.Find(x => Convert.ToInt32(x.Content) == s.Id);
+                    bt.Background = Brushes.Yellow;
+                }
+                if (s.Sold)
+                {
+                    var bt = ButtonList.Find(x => Convert.ToInt32(x.Content) == s.Id);
+                    bt.Background = Brushes.Red;
+                }
+                if (!s.Sold && !s.Reservation)
+                {
+                    var bt = ButtonList.Find(x => Convert.ToInt32(x.Content) == s.Id);
+                    bt.Background = Brushes.WhiteSmoke;
+                }
+            }
         }
 
         private void Func(object sender, RoutedEventArgs e)
@@ -53,8 +116,6 @@ namespace CinemaWPF
 
                 var result = sclient.BuySeat(id);
             }
-
-            RefreshAsync();
         }
 
         private void BuyTicketClick(object sender, RoutedEventArgs e)
@@ -235,29 +296,6 @@ namespace CinemaWPF
                 }
             }
         }
-
-        private async void RefreshAsync()
-        {
-            seatsList = await sclient.GetSeats();
-
-            foreach (var s in seatsList)
-            {
-                if (s.Reservation)
-                {
-                    var bt = ButtonList.Find(x => Convert.ToInt32(x.Content) == s.Id);
-                    bt.Background = Brushes.Yellow;
-                }
-                if (s.Sold)
-                {
-                    var bt = ButtonList.Find(x => Convert.ToInt32(x.Content) == s.Id);
-                    bt.Background = Brushes.Red;
-                }
-                if(!s.Sold && !s.Reservation)
-                {
-                    var bt = ButtonList.Find(x => Convert.ToInt32(x.Content) == s.Id);
-                    bt.Background = Brushes.WhiteSmoke;
-                }
-            }           
-        }
+       
     }
 }
