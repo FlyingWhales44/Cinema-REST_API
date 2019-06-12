@@ -36,8 +36,8 @@ namespace RESTAPI.Controllers
         }
 
         [HttpGet]
-        [Route("check/{id}")]
-        public bool Check(HttpRequestMessage request,int id)
+        [Route("checkSold/{id}")]
+        public bool CheckIfSold(HttpRequestMessage request,int id)
         {
             lock (SyncObject)
             {
@@ -54,7 +54,27 @@ namespace RESTAPI.Controllers
                     return false;
             }
         }
-        
+
+        [HttpGet]
+        [Route("checkReservation/{id}")]
+        public bool CheckIfReserved(HttpRequestMessage request, int id)
+        {
+            lock (SyncObject)
+            {
+                var m = db.seatsList.FirstOrDefault(x => x.Id == id);
+
+                if (m != null)
+                {
+                    if (m.Reservation)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+        }
+
         [HttpPost]
         [Route("add")]
         public HttpResponseMessage Post(HttpRequestMessage request)
@@ -82,7 +102,7 @@ namespace RESTAPI.Controllers
 
                 if (m != null)
                 {
-                    if (!m.Sold)
+                    if (!m.Sold && !m.Reservation)
                     {
                         m.Sold = true;
                     }
@@ -91,7 +111,7 @@ namespace RESTAPI.Controllers
                         return new HttpResponseMessage()
                         {
                             Content = new StringContent(
-                                  "Place already sold", Encoding.UTF8
+                                  "Place cant be sold", Encoding.UTF8
                           )
                         };
                     }
@@ -106,15 +126,65 @@ namespace RESTAPI.Controllers
         }
 
         [HttpPut]
-        [Route("releaseSeat/{id}")]
-        public HttpResponseMessage ReleaseSeat(HttpRequestMessage request, int id)
+        [Route("reservation/{id}")]
+        public HttpResponseMessage Reservation(HttpRequestMessage request, int id)
         {
             lock (SyncObject)
             {
                 var m = db.seatsList.FirstOrDefault(x => x.Id == id);
 
-                if(m != null)
-                    m.Sold = false;
+                if (m != null)
+                {
+                    if (!m.Reservation && !m.Sold)
+                    {
+                        m.Reservation = true;
+                    }
+                    else
+                    {
+                        return new HttpResponseMessage()
+                        {
+                            Content = new StringContent(
+                                  "Place already reserved or sold", Encoding.UTF8
+                          )
+                        };
+                    }
+                }
+
+
+                return new HttpResponseMessage()
+                {
+                    Content = new StringContent(
+                                "Place is reserved for you", Encoding.UTF8
+                        )
+                };
+            }
+        }
+
+        [HttpPut]
+        [Route("clearReservation/{id}")]
+        public HttpResponseMessage ClearReservation(HttpRequestMessage request,int id)
+        {
+            lock (SyncObject)
+            {
+                var m = db.seatsList.FirstOrDefault(x => x.Id == id);
+
+                m.Reservation = false;
+
+                return request.CreateResponse(HttpStatusCode.OK);
+            }
+        }
+
+        [HttpPut]
+        [Route("releaseAll")]
+        public HttpResponseMessage ReleaseSeat(HttpRequestMessage request)
+        {
+            lock (SyncObject)
+            {
+               foreach(var s in db.seatsList)
+                {
+                    s.Reservation = false;
+                    s.Sold = false;
+                }             
 
                 return request.CreateResponse(HttpStatusCode.OK);
             }

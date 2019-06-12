@@ -26,6 +26,7 @@
         </TabControl>
         <Button Name="btBuy" Content="Buy ticket" HorizontalAlignment="Left" Margin="657,35,0,0" VerticalAlignment="Top" Width="99" Height="32" Click="BuyTicketClick"/>
         <Button Name="btRegister" Content="Register" HorizontalAlignment="Left" Margin="657,90,0,0" VerticalAlignment="Top" Width="99" Height="32" Click="RegisterClick"/>
-        <Button Name="btRelease" Content="Set places free" HorizontalAlignment="Left" Margin="657,364,0,0" VerticalAlignment="Top" Width="99" Height="32" Click="ReleaseClick"/>
+        <Button Name="btRelease" Content="Set all places free" HorizontalAlignment="Left" Margin="657,364,0,0" VerticalAlignment="Top" Width="99" Height="32" Click="ReleaseClick"/>
+        <Button Name="btReleaseRegister" Content="Release Register" HorizontalAlignment="Left" Margin="657,149,0,0" VerticalAlignment="Top" Width="99" Height="32" Click="ReleaseRegisterClick"/>
     </Grid>
 </Window>

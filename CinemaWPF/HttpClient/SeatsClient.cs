@@ -22,35 +22,102 @@ namespace CinemaWPF
             url = "http://localhost:58059/seats/";
         }
 
-        public async Task<SeatModel> CreateSeat(int hallId)
+        public async Task<List<SeatModel>> GetSeats()
         {
-            SeatModel s = new SeatModel();
-
-            s.Reservation = false;
-            s.Sold = false;
-            s.HallId = hallId;
-
-            string json = JsonConvert.SerializeObject(s);
-
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync(url + "add", httpContent);
-            response.EnsureSuccessStatusCode();
+            var response = await client.GetStringAsync(url + "getAll");
 
+            List<SeatModel> ls = JsonConvert.DeserializeObject<List<SeatModel>>(response);
 
-            var resultString = response.Content.ReadAsStringAsync().Result;
-
-            var result = JsonConvert.DeserializeObject<SeatModel>(resultString);
-
-            return result;
+            return ls;
         }
 
+        public async Task<HttpResponseMessage> BuySeat(int id)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
+            var response = await client.PutAsync(url + "buyTicket/" + id, null);
 
+            return response;
+        }
 
+        public async Task<string> Reservation(int id)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
+
+            var response = await client.PutAsync(url + "reservation/" + id, null);
+
+            var resString = await response.Content.ReadAsStringAsync();            
+
+            return resString;
+        }
+
+        public async Task<HttpResponseMessage> ClearReservation(int id)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
+
+            var response = await client.PutAsync(url + "clearReservation/" + id, null);
+
+            return response;
+        }
+
+        public async Task<bool> CheckIfReserved(int id)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
+
+            var response = await client.GetAsync(url + "checkReservation/" + id);
+
+            var v = JsonConvert.DeserializeObject<List<bool>>(response.ToString());
+            
+            return v[0];
+        }
+
+        public async Task<bool> CheckIfSold(int id)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
+
+            var response = await client.GetAsync(url + "checkSold/" + id);
+
+            var v = JsonConvert.DeserializeObject<List<bool>>(response.ToString());
+
+            return v[0];
+        }
+
+        public async Task<HttpResponseMessage> ClearAll()
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(
+                new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
+
+            var response = await client.PutAsync(url + "releaseAll", null);
+
+            return response;
+        }
     }   
 }
