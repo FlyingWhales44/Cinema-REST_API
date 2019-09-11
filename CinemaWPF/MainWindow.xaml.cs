@@ -55,7 +55,7 @@ namespace CinemaWPF
         {
             this.Dispatcher.Invoke(() =>
             {
-                seatsList = sclient.GetSeats().Result;
+                seatsList = sclient.GetSeats();
             });
         }
 
@@ -156,14 +156,14 @@ namespace CinemaWPF
             btReleaseRegister.Background = Brushes.Red;
         }
 
-        private async Task initializeHalls()
+        private void initializeHalls()
         {
              initFirstHallAsync(8, 8);
-             initSeccHallAsync(10, 10);
-             initThirdHallAsync(15, 15);
+             //initSeccHallAsync(10, 10);
+             //initThirdHallAsync(15, 15);
         }
 
-        private async Task initFirstHallAsync(int x,int y)
+        private void initFirstHallAsync(int x,int y)
         {
             Button pole = new Button();
             ButtonList = new List<Button>();
@@ -171,7 +171,7 @@ namespace CinemaWPF
             FirstGrid.ColumnDefinitions.Clear();
             FirstGrid.Children.Clear();
 
-            seatsList = await sclient.GetSeats();
+            seatsList = sclient.GetSeats();
 
             var ls = seatsList.FindAll(f => f.HallId == 1).OrderBy(f => f.Id);
 
@@ -209,7 +209,7 @@ namespace CinemaWPF
             }
         }
 
-        private async Task initSeccHallAsync(int x, int y)
+        private void initSeccHallAsync(int x, int y)
         {
             Button pole = new Button();
             ButtonList = new List<Button>();
@@ -223,7 +223,7 @@ namespace CinemaWPF
             for (int i = 0; i < y; i++)
                 SecondGrid.RowDefinitions.Add(new RowDefinition());
 
-            seatsList = await sclient.GetSeats();
+            seatsList = sclient.GetSeats();
 
             var ls = seatsList.FindAll(f => f.HallId == 2).OrderBy(f => f.Id);
 
@@ -253,7 +253,7 @@ namespace CinemaWPF
             }
         }
 
-        private async Task initThirdHallAsync(int x, int y)
+        private void initThirdHallAsync(int x, int y)
         {
             Button pole = new Button();
             ButtonList = new List<Button>();
@@ -269,7 +269,7 @@ namespace CinemaWPF
 
             int q = 0, w = 0;
 
-            seatsList = await sclient.GetSeats();
+            seatsList = sclient.GetSeats();
 
             var ls = seatsList.FindAll(f => f.HallId == 3).OrderBy(f => f.Id);
 

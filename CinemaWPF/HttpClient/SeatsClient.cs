@@ -22,21 +22,21 @@ namespace CinemaWPF
             url = "http://localhost:58059/seats/";
         }
 
-        public async Task<List<SeatModel>> GetSeats()
+        public List<SeatModel> GetSeats()
         {
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.GetStringAsync(url + "getAll");
+            var response = client.GetStringAsync(url + "getAll").Result;
 
             List<SeatModel> ls = JsonConvert.DeserializeObject<List<SeatModel>>(response);
 
             return ls;
         }
 
-        public async Task<HttpResponseMessage> BuySeat(int id)
+        public HttpResponseMessage BuySeat(int id)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -44,12 +44,12 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.PutAsync(url + "buyTicket/" + id, null);
+            var response = client.PutAsync(url + "buyTicket/" + id, null).Result;
 
             return response;
         }
 
-        public async Task<string> Reservation(int id)
+        public string Reservation(int id)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -57,14 +57,14 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.PutAsync(url + "reservation/" + id, null);
+            var response = client.PutAsync(url + "reservation/" + id, null).Result;
 
-            var resString = await response.Content.ReadAsStringAsync();            
+            var resString = response.Content.ReadAsStringAsync().Result;
 
             return resString;
         }
 
-        public async Task<HttpResponseMessage> ClearReservation(int id)
+        public HttpResponseMessage ClearReservation(int id)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -72,12 +72,12 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.PutAsync(url + "clearReservation/" + id, null);
+            var response = client.PutAsync(url + "clearReservation/" + id, null).Result;
 
             return response;
         }
 
-        public async Task<bool> CheckIfReserved(int id)
+        public bool CheckIfReserved(int id)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -85,14 +85,14 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.GetAsync(url + "checkReservation/" + id);
+            var response = client.GetAsync(url + "checkReservation/" + id);
 
             var v = JsonConvert.DeserializeObject<List<bool>>(response.ToString());
             
             return v[0];
         }
 
-        public async Task<bool> CheckIfSold(int id)
+        public bool CheckIfSold(int id)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -100,14 +100,14 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.GetAsync(url + "checkSold/" + id);
+            var response = client.GetAsync(url + "checkSold/" + id);
 
             var v = JsonConvert.DeserializeObject<List<bool>>(response.ToString());
 
             return v[0];
         }
 
-        public async Task<HttpResponseMessage> ClearAll()
+        public HttpResponseMessage ClearAll()
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -115,7 +115,7 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = await client.PutAsync(url + "releaseAll", null);
+            var response = client.PutAsync(url + "releaseAll", null).Result;
 
             return response;
         }
