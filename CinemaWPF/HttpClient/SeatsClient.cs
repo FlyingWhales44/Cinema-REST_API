@@ -36,7 +36,7 @@ namespace CinemaWPF
             return ls;
         }
 
-        public HttpResponseMessage BuySeat(int id)
+        public string BuySeat(int id)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
@@ -44,9 +44,11 @@ namespace CinemaWPF
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("User-Agent", "Test HTTP Client");
 
-            var response = client.PutAsync(url + "buyTicket/" + id, null).Result;
+            var response = client.GetStringAsync(url + "buyTicket/" + id).Result;
 
-            return response;
+            var resp = JsonConvert.DeserializeObject(response);
+
+            return resp.ToString();
         }
 
         public string Reservation(int id)

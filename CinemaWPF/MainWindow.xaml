@@ -8,19 +8,9 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl Name="TabControl" HorizontalAlignment="Left" Height="386" Margin="10,10,0,0" VerticalAlignment="Top" Width="622">
-            <TabItem Name="FirstTbItem" Header="TabItem">
+            <TabItem Name="FirstTbItem" Header="Pierwsz Sala">
                 <Grid Background="#FFE5E5E5">
                     <Grid Name="FirstGrid" HorizontalAlignment="Left" Height="338" Margin="10,10,0,0" VerticalAlignment="Top" Width="596"/>
-                </Grid>
-            </TabItem>
-            <TabItem Name="SeccondTbItem" Header="TabItem">
-                <Grid Background="#FFE5E5E5">
-                    <Grid Name="SecondGrid" HorizontalAlignment="Left" Height="338" Margin="10,10,0,0" VerticalAlignment="Top" Width="596"/>
-                </Grid>
-            </TabItem>
-            <TabItem Name="ThirdTbItem" Header="TabItem">
-                <Grid Background="#FFE5E5E5">
-                    <Grid Name="ThirdGrid" HorizontalAlignment="Left" Height="338" Margin="10,10,0,0" VerticalAlignment="Top" Width="596"/>
                 </Grid>
             </TabItem>
         </TabControl>

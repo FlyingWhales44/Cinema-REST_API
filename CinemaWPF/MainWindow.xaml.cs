@@ -32,7 +32,7 @@ namespace CinemaWPF
 
             sclient = new SeatsClient();
 
-            initializeHalls();
+            initializeHall();
 
             declareTimers();
 
@@ -156,11 +156,9 @@ namespace CinemaWPF
             btReleaseRegister.Background = Brushes.Red;
         }
 
-        private void initializeHalls()
+        private void initializeHall()
         {
              initFirstHallAsync(8, 8);
-             //initSeccHallAsync(10, 10);
-             //initThirdHallAsync(15, 15);
         }
 
         private void initFirstHallAsync(int x,int y)
@@ -202,94 +200,6 @@ namespace CinemaWPF
 
                 q++;
                 if(q >= x)
-                {
-                    w++;
-                    q = 0;
-                }
-            }
-        }
-
-        private void initSeccHallAsync(int x, int y)
-        {
-            Button pole = new Button();
-            ButtonList = new List<Button>();
-            SecondGrid.RowDefinitions.Clear();
-            SecondGrid.ColumnDefinitions.Clear();
-            SecondGrid.Children.Clear();
-
-            for (int j = 0; j < x; j++)
-                SecondGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            for (int i = 0; i < y; i++)
-                SecondGrid.RowDefinitions.Add(new RowDefinition());
-
-            seatsList = sclient.GetSeats();
-
-            var ls = seatsList.FindAll(f => f.HallId == 2).OrderBy(f => f.Id);
-
-            int q = 0, w = 0;
-
-            foreach (var s in ls)
-            {
-                pole = new Button();
-                pole.Background = Brushes.WhiteSmoke;
-
-                pole.Content = s.Id;
-                pole.Name = "I" + s.Id + "I";
-
-                pole.SetValue(Grid.RowProperty, w);
-                pole.SetValue(Grid.ColumnProperty, q);
-
-                pole.PreviewMouseDown += new MouseButtonEventHandler(Func);
-                ButtonList.Add(pole);
-                SecondGrid.Children.Add(pole);
-
-                q++;
-                if (q >= x)
-                {
-                    w++;
-                    q = 0;
-                }
-            }
-        }
-
-        private void initThirdHallAsync(int x, int y)
-        {
-            Button pole = new Button();
-            ButtonList = new List<Button>();
-            ThirdGrid.RowDefinitions.Clear();
-            ThirdGrid.ColumnDefinitions.Clear();
-            ThirdGrid.Children.Clear();
-
-            for (int j = 0; j < x; j++)
-                ThirdGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            for (int i = 0; i < y; i++)
-                ThirdGrid.RowDefinitions.Add(new RowDefinition());
-
-            int q = 0, w = 0;
-
-            seatsList = sclient.GetSeats();
-
-            var ls = seatsList.FindAll(f => f.HallId == 3).OrderBy(f => f.Id);
-
-            foreach (var s in ls)
-            {
-                pole = new Button();
-                pole.Background = Brushes.WhiteSmoke;
-
-                pole.Content = s.Id;
-                pole.Name = "I" + s.Id + "I";
-
-                pole.SetValue(Grid.RowProperty, w);
-                pole.SetValue(Grid.ColumnProperty, q);
-
-                pole.PreviewMouseDown += new MouseButtonEventHandler(Func);
-                ButtonList.Add(pole);
-                ThirdGrid.Children.Add(pole);
-
-                q++;
-                if (q >= x)
                 {
                     w++;
                     q = 0;

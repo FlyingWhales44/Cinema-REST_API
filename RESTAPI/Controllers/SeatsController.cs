@@ -92,9 +92,9 @@ namespace RESTAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpGet]
         [Route("buyTicket/{id}")]
-        public HttpResponseMessage BuyTicket(HttpRequestMessage request,int id)
+        public HttpResponseMessage BuyTicket(HttpRequestMessage request, int id)
         {
             lock (SyncObject)
             {
@@ -111,18 +111,22 @@ namespace RESTAPI.Controllers
                         return new HttpResponseMessage()
                         {
                             Content = new StringContent(
-                                  "Place cant be sold", Encoding.UTF8
-                          )
+                                  JsonConvert.SerializeObject("Place cant be sold"),
+                                  Encoding.UTF8,
+                                  "application/json")
                         };
                     }
                 }
 
 
-                return new HttpResponseMessage(){
+                return new HttpResponseMessage()
+                {
                     Content = new StringContent(
-                                "Have a nice movie", Encoding.UTF8
-                        )};
-            }         
+                                JsonConvert.SerializeObject("Have a nice movie"),
+                                Encoding.UTF8,
+                                "application/json")
+                };
+            }
         }
 
         [HttpPut]
